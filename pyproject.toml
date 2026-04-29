@@ -2,7 +2,7 @@
 name = "latent-space-topology"
 version = "0.1.0"
 description = "Exploratory notebooks for tokenizer-induced latent geometry and topology."
-readme = "project_note.md"
+readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "accelerate",
