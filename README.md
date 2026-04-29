@@ -24,6 +24,9 @@ the current run without recomputing model weights.
 | `06_flux_tda_exploration.ipynb` | Run the first persistent-homology probe with controls. |
 | `07_stability_and_artifact_controls.ipynb` | Repeat the TDA pipeline across seeds, views, knobs, and controls. |
 | `08_representation_comparison.ipynb` | Compare FLUX, SD VAE, VQ, ViT, CLIP, and raw-patch token clouds. |
+| `09_interpreting_persistent_features.ipynb` | Map selected FLUX persistent-feature supports back to image patches. |
+| `10_natural_patch_baseline.ipynb` | Build a raw natural-image-patch baseline with controls. |
+| `11_metric_preprocessing_sensitivity.ipynb` | Test how FLUX summaries change under metric and preprocessing choices. |
 
 ## Installation
 
