@@ -27,6 +27,7 @@ the current run without recomputing model weights.
 | `09_interpreting_persistent_features.ipynb` | Map selected FLUX persistent-feature supports back to image patches. |
 | `10_natural_patch_baseline.ipynb` | Build a raw natural-image-patch baseline with controls. |
 | `11_metric_preprocessing_sensitivity.ipynb` | Test how FLUX summaries change under metric and preprocessing choices. |
+| `12_cycle_hunt_long_lived_h1.ipynb` | Summarize the search for the claimed long-lived FLUX H1 cycle. |
 
 ## Installation
 
