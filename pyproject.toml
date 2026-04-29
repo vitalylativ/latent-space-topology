@@ -1,0 +1,38 @@
+[project]
+name = "latent-space-topology"
+version = "0.1.0"
+description = "Exploratory notebooks for tokenizer-induced latent geometry and topology."
+readme = "project_note.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "accelerate",
+    "datasets",
+    "diffusers[torch]",
+    "einops",
+    "gudhi",
+    "huggingface-hub",
+    "ipykernel",
+    "ipywidgets",
+    "jupyterlab",
+    "matplotlib",
+    "nbclient",
+    "nbformat",
+    "numpy",
+    "pandas",
+    "persim",
+    "pillow",
+    "plotly",
+    "ripser",
+    "safetensors",
+    "scikit-learn",
+    "scipy",
+    "seaborn",
+    "timm",
+    "torch",
+    "torchvision",
+    "tqdm",
+    "transformers",
+]
+
+[tool.uv]
+package = false

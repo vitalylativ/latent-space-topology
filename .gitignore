@@ -1,0 +1,7 @@
+.venv/
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
+data/
+outputs/
+notebooks/.ipynb_checkpoints/
