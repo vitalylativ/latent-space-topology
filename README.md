@@ -23,6 +23,7 @@ the current run without recomputing model weights.
 | `05_flux_encoder_deep_dive.ipynb` | Focus on FLUX VAE token geometry and nearest-neighbor structure. |
 | `06_flux_tda_exploration.ipynb` | Run the first persistent-homology probe with controls. |
 | `07_stability_and_artifact_controls.ipynb` | Repeat the TDA pipeline across seeds, views, knobs, and controls. |
+| `08_representation_comparison.ipynb` | Compare FLUX, SD VAE, VQ, ViT, CLIP, and raw-patch token clouds. |
 
 ## Installation
 
