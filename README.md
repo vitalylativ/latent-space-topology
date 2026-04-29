@@ -22,6 +22,7 @@ the current run without recomputing model weights.
 | `04_geometric_intuition_before_topology.ipynb` | Check latent norms, PCA, density, and spatial effects before TDA. |
 | `05_flux_encoder_deep_dive.ipynb` | Focus on FLUX VAE token geometry and nearest-neighbor structure. |
 | `06_flux_tda_exploration.ipynb` | Run the first persistent-homology probe with controls. |
+| `07_stability_and_artifact_controls.ipynb` | Repeat the TDA pipeline across seeds, views, knobs, and controls. |
 
 ## Installation
 
