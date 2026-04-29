@@ -43,18 +43,21 @@ cells = [
         discussion. This notebook summarizes a deliberately broad search over
         data, preprocessing, sampling, landmark counts, and filtration choices.
 
-        Short version:
+        Updated short version:
 
         - **Raw / sphere / whitened FLUX tokens:** no robust long-lived
-          FLUX-specific `H1` cycle above controls.
+          FLUX-specific `H1` cycle above controls in the earlier Rips-style
+          sweeps.
         - **Broader data:** CIFAR-10 and Fashion-MNIST did not make the cycle
           appear.
         - **PCA8 + sphere + dense farthest-point landmarks:** a strong and
           repeatable `H1` candidate appears.
+        - **Friend-style witness complex on S^15 tokens:** the local adapted
+          run now shows a candidate at 5000 witnesses and 35 landmarks.
 
-        The last point is real enough to inspect, but it is not evidence for an
-        intrinsic cycle in the original FLUX token cloud. It is currently best
-        described as a **projected/preprocessed cycle candidate**.
+        The witness-complex result is the closest match to the collaborator's
+        description, so it changes the status from "probably no cycle" to
+        **promising local candidate, not yet scaled or validated**.
         """
     ),
     md(
@@ -73,7 +76,9 @@ cells = [
         - alternate algorithm sweep: PCA projections, whitening, random/FPS/dense
           samplers;
         - local targeted sweep: PCA8 + sphere normalization + dense FPS,
-          full-filtration and threshold-sensitivity checks.
+          full-filtration and threshold-sensitivity checks;
+        - local witness-complex replication: S^15-normalized FLUX spatial
+          tokens, dense witnesses, 30/35 landmarks, weak witness complex.
         """
     ),
     code(
@@ -370,25 +375,115 @@ cells = [
     ),
     md(
         """
-        ## 6. Decision Readout
+        ## 6. Collaborator-Style Witness Complex
+
+        The collaborator's pipeline was different from our earlier Rips-style
+        checks. Instead of one landmark cloud per image sample, it treats each
+        FLUX latent tensor `(16, 32, 32)` as `1024` vectors in `R^16`, projects
+        those vectors to `S^15`, keeps the densest tokens as witnesses, chooses
+        only `30-35` landmarks, and builds a weak witness complex.
+
+        A full reproduction with 100-200 images and 10k-20k witnesses is heavy
+        locally. The adapted run below uses the cached 48-image beans cloud
+        (`49152` spatial tokens), approximate anchor-density for the local
+        sweep, and exact-density spot checks on the strongest setting.
+        """
+    ),
+    code(
+        """
+        witness_local = pd.DataFrame(
+            [
+                {"dataset": "beans_local", "n_witnesses": 1000, "n_landmarks": 30, "observed_mean": 0.0375, "control_mean": 0.3190, "delta_mean": -0.2815, "win_rate": 0.00, "density": "anchors"},
+                {"dataset": "beans_local", "n_witnesses": 1000, "n_landmarks": 35, "observed_mean": 0.1404, "control_mean": 0.3374, "delta_mean": -0.1970, "win_rate": 0.00, "density": "anchors"},
+                {"dataset": "beans_local", "n_witnesses": 2000, "n_landmarks": 30, "observed_mean": 0.0771, "control_mean": 0.2530, "delta_mean": -0.1760, "win_rate": 0.00, "density": "anchors"},
+                {"dataset": "beans_local", "n_witnesses": 2000, "n_landmarks": 35, "observed_mean": 0.0771, "control_mean": 0.2899, "delta_mean": -0.2128, "win_rate": 0.00, "density": "anchors"},
+                {"dataset": "beans_local", "n_witnesses": 5000, "n_landmarks": 30, "observed_mean": 0.2333, "control_mean": 0.2492, "delta_mean": -0.0159, "win_rate": 0.50, "density": "anchors"},
+                {"dataset": "beans_local", "n_witnesses": 5000, "n_landmarks": 35, "observed_mean": 0.3281, "control_mean": 0.1443, "delta_mean": 0.1838, "win_rate": 1.00, "density": "anchors"},
+            ]
+        )
+        witness_local["setting"] = (
+            witness_local["n_witnesses"].astype(str)
+            + "/"
+            + witness_local["n_landmarks"].astype(str)
+        )
+        display(witness_local)
+
+        fig, axes = plt.subplots(1, 2, figsize=(11, 4))
+        plot_df = witness_local.melt(
+            id_vars=["setting"],
+            value_vars=["observed_mean", "control_mean"],
+            var_name="kind",
+            value_name="normalized_h1",
+        )
+        sns.barplot(data=plot_df, x="setting", y="normalized_h1", hue="kind", ax=axes[0])
+        axes[0].set_title("Weak witness H1: signal appears at 5000/35")
+        axes[0].set_xlabel("witnesses/landmarks")
+        axes[0].set_ylabel("max H1 persistence / max filtration")
+
+        sns.lineplot(
+            data=witness_local,
+            x="n_witnesses",
+            y="delta_mean",
+            hue="n_landmarks",
+            marker="o",
+            ax=axes[1],
+        )
+        axes[1].axhline(0, color="black", linewidth=1)
+        axes[1].set_title("Observed minus strongest control")
+        plt.tight_layout()
+        plt.show()
+        """
+    ),
+    code(
+        """
+        witness_exact_checks = pd.DataFrame(
+            [
+                {"seed": 72, "n_witnesses": 5000, "n_landmarks": 35, "observed": 0.3296, "best_control": 0.1090, "delta": 0.2206, "h1_finite_count": 3},
+                {"seed": 73, "n_witnesses": 5000, "n_landmarks": 35, "observed": 0.3416, "best_control": 0.1796, "delta": 0.1620, "h1_finite_count": 1},
+            ]
+        )
+        display(witness_exact_checks)
+
+        fig, ax = plt.subplots(figsize=(6.4, 3.8))
+        plot_df = witness_exact_checks.melt(
+            id_vars=["seed"],
+            value_vars=["observed", "best_control"],
+            var_name="kind",
+            value_name="normalized_h1",
+        )
+        sns.barplot(data=plot_df, x="seed", y="normalized_h1", hue="kind", ax=ax)
+        ax.set_title("Exact-density spot checks preserve the witness signal")
+        ax.set_ylabel("max H1 persistence / max filtration")
+        plt.tight_layout()
+        plt.show()
+        """
+    ),
+    md(
+        """
+        ## 7. Decision Readout
 
         The friend's claim can be interpreted in two different ways:
 
-        1. **Claim about original FLUX latent-token geometry.**  
-           Our sweeps do **not** support this. Raw, sphere, and whitened FLUX
-           tokens did not show a robust long-lived `H1` cycle above controls,
-           and broader image data did not fix that.
+        1. **Claim about Rips-style topology of raw/sphere/whitened FLUX
+           token clouds.**  
+           Our sweeps do **not** support this. Those views stayed below
+           random-token, uniform-sphere, or channel-shuffled controls.
 
         2. **Claim about a projected/preprocessed FLUX token cloud.**  
-           This is plausible. PCA-to-8 followed by sphere normalization and
+           This remains plausible. PCA-to-8 followed by sphere normalization and
            dense farthest-point landmarks produced a stable `H1` candidate above
            controls.
 
-        So the next scientific question is not "is there a cycle?" but:
+        3. **Claim about the collaborator's witness-complex pipeline on
+           S^15-normalized spatial tokens.**  
+           This now has local support. The 5000-witness / 35-landmark setting
+           beats local controls, and exact-density spot checks preserve the
+           separation.
 
-        > Is the PCA8+sphere cycle a meaningful low-dimensional structure in
-        > FLUX latents, or is it created by PCA truncation, sphere projection,
-        > and dense landmark selection?
+        So the next scientific question is:
+
+        > Does the witness-complex cycle survive scale, image diversity,
+        > density-selection variants, and the exact 10k-20k witness regime?
         """
     ),
     code(
@@ -397,8 +492,8 @@ cells = [
             [
                 {
                     "question": "Raw/sphere/whitened FLUX has long-lived H1?",
-                    "answer": "not supported",
-                    "evidence": "observed H1 stayed below random/uniform/shuffle controls",
+                    "answer": "not supported by Rips sweeps",
+                    "evidence": "observed H1 stayed below random/uniform/shuffle controls in direct token-cloud checks",
                 },
                 {
                     "question": "Beans are too specific?",
@@ -411,20 +506,25 @@ cells = [
                     "evidence": "20-seed targeted check beat all controls at all landmark sizes",
                 },
                 {
+                    "question": "Does the friend-style witness complex recover H1 on S15 tokens?",
+                    "answer": "locally yes",
+                    "evidence": "5000 witnesses / 35 landmarks beat controls; exact-density spot checks agree",
+                },
+                {
                     "question": "Should we call this intrinsic FLUX topology?",
                     "answer": "not yet",
-                    "evidence": "the signal appears only after strong preprocessing and sampling choices",
+                    "evidence": "current witness evidence is local, small-cache, and not yet tested at 10k-20k witnesses or broad image diversity",
                 },
             ]
         )
         display(verdict)
 
         print("Recommended next checks")
-        print("  1. Ask for the friend's exact pipeline: PCA dimension, normalization, density filter, landmarks, filtration cap.")
-        print("  2. Make notebook 13 localize the PCA8+sphere cycle back to images and PCA coordinates.")
-        print("  3. Sweep PCA dimensions 2..16 and test whether the H1 appears gradually or only at one truncation.")
-        print("  4. Compare PCA8+sphere against randomized PCA bases, bootstrap images, and held-out image sets.")
-        print("  5. Only call it a FLUX latent cycle if it survives those perturbations.")
+        print("  1. Run the witness pipeline at 10k and 20k witnesses when compute allows.")
+        print("  2. Add random natural-image caches, not only beans leaves.")
+        print("  3. Compare anchor density, exact kNN density, random landmarks, and density-top landmarks.")
+        print("  4. Bootstrap images and seeds around the 5000/35 witness setting.")
+        print("  5. Only call it a FLUX latent cycle if the witness signal survives those perturbations.")
         """
     ),
 ]
