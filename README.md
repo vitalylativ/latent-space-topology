@@ -1,13 +1,27 @@
 # Latent Space Topology
 
-Exploratory notebooks for studying the geometry and topology of image encoder
-latents, with a current focus on FLUX-style VAE spatial tokens. The project
-treats each spatial latent vector as a point cloud sample, then compares raw,
-normalized, density-filtered, and control clouds before running persistent
-homology.
+Exploratory notebooks on the geometry and topology of image encoder latents,
+with a current focus on FLUX-style VAE spatial tokens.
 
-The longer motivation and caveats live in [project_note.md](project_note.md);
-the literature map is in [literature_review.md](literature_review.md).
+The current experiment treats each spatial latent vector as a point-cloud
+sample, compares raw and normalized views, adds simple controls, and then runs
+persistent homology as a diagnostic rather than as a final claim about "the"
+topology of the model.
+
+For context, see [project_note.md](project_note.md) and
+[literature_review.md](literature_review.md).
+
+## Notebook Map
+
+The notebooks are committed with executed cells so collaborators can inspect
+the current run without recomputing model weights.
+
+| Notebook | Purpose |
+| --- | --- |
+| `03_understand_tokenizers_encoders.ipynb` | Compare image tokenizer and encoder families. |
+| `04_geometric_intuition_before_topology.ipynb` | Check latent norms, PCA, density, and spatial effects before TDA. |
+| `05_flux_encoder_deep_dive.ipynb` | Focus on FLUX VAE token geometry and nearest-neighbor structure. |
+| `06_flux_tda_exploration.ipynb` | Run the first persistent-homology probe with controls. |
 
 ## Installation
 
@@ -20,7 +34,7 @@ uv sync
 ```
 
 The notebooks download model weights from Hugging Face on first use. On Apple
-Silicon or CUDA machines they will try to use the available accelerator; set
+Silicon or CUDA machines they try to use the available accelerator. Set
 `TOKENIZER_FORCE_CPU=1` to force CPU execution.
 
 ## Data
@@ -44,7 +58,7 @@ TOKENIZER_N_IMAGES=128 ./scripts/download_beans_data.sh
 The script writes images plus `data/images/beans/metadata.csv`, which is the
 format expected by `notebook_utils.encoder_explorer.load_project_images`.
 
-## Running Notebooks
+## Running
 
 Start Jupyter:
 
@@ -52,7 +66,7 @@ Start Jupyter:
 uv run jupyter lab
 ```
 
-For a quick topology smoke run:
+To rerun a quick topology smoke pass from the terminal:
 
 ```bash
 TOKENIZER_SMOKE=1 uv run jupyter nbconvert \
