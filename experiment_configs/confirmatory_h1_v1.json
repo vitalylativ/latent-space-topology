@@ -1,0 +1,189 @@
+{
+  "metadata": {
+    "name": "confirmatory_h1_v1",
+    "created_at": "2026-05-01",
+    "frozen": true,
+    "config_sha256": "c8fa8541f1bf01fefb5e112c7cd43b1ceb8af043b8f3cf7095a7de160ba787e2",
+    "config_hash_rule": "sha256 of canonical JSON with metadata.config_sha256 omitted",
+    "description": "Held-out confirmatory sweep for FLUX latent-token H1 candidates."
+  },
+  "model": {
+    "name": "flux_vae",
+    "model_id": "diffusers/FLUX.1-vae",
+    "token_kind": "posterior_mean",
+    "image_size": 256,
+    "batch_size": 4
+  },
+  "data": {
+    "eval_images": 256,
+    "fit_images": 64,
+    "smoke_eval_images": 12,
+    "smoke_fit_images": 4,
+    "datasets": [
+      "beans",
+      "cifar10",
+      "stl10",
+      "fashion_mnist"
+    ],
+    "existing_cache_aliases": {
+      "beans": "beans_local"
+    },
+    "heldout_policy": "Fit preprocessing transforms on fit split only; compute verdict on eval split only. Existing outputs are calibration evidence and are not used for the final verdict."
+  },
+  "seeds": {
+    "seed_sequence_entropy": 20260501,
+    "confirmatory": [
+      1263310754,
+      439784289,
+      2826189009,
+      3283243824,
+      3972680020,
+      3105717802,
+      1696881889,
+      3055175528,
+      4233998099,
+      3639767845,
+      3765127950,
+      384507785,
+      2977005583,
+      2560238509,
+      4280004254,
+      1618909228,
+      1153886696,
+      3434317668,
+      842650268,
+      2693399752,
+      2819744719,
+      4244733110,
+      2928010816,
+      4261163214,
+      1794750327,
+      2890277393,
+      603516829,
+      2237041780,
+      2997192987,
+      1407059561
+    ],
+    "smoke": [
+      1263310754,
+      439784289
+    ]
+  },
+  "controls": [
+    "random_tokens",
+    "uniform_sphere",
+    "channel_shuffle",
+    "matched_gaussian"
+  ],
+  "decision_rules": {
+    "primary_dim": 1,
+    "mean_delta_min": 0.05,
+    "mean_ratio_min": 1.25,
+    "bootstrap_ci_lower_min": 0.0,
+    "bootstrap_iterations": 2000,
+    "bootstrap_seed": 90501,
+    "win_rate_min": 0.8,
+    "dataset_positive_min": 3,
+    "dataset_count": 4,
+    "stability_positive_rate_min": 0.7,
+    "rule_out_win_rate_max": 0.6
+  },
+  "pipelines": {
+    "pca8_sphere_rips": {
+      "family": "rips",
+      "stage": "primary",
+      "maxdim": 2,
+      "distance_quantile": 1.0,
+      "projection": "pca_sphere",
+      "pca_dim": 8,
+      "transform_fit_split": "fit",
+      "n_dense": 1600,
+      "k_density": 32,
+      "max_candidates": 20000,
+      "n_landmarks": 95,
+      "landmark_strategy": "fps"
+    },
+    "s15_witness": {
+      "family": "witness",
+      "stage": "primary",
+      "maxdim": 2,
+      "projection": "sphere",
+      "density_mode": "exact",
+      "density_probes": 4096,
+      "density_chunk_size": 2048,
+      "k_density": 16,
+      "max_candidates": 20000,
+      "n_witnesses": 5000,
+      "n_landmarks": 35,
+      "landmark_strategy": "fps",
+      "max_alpha_square": "inf"
+    },
+    "synthetic_circle": {
+      "family": "positive_control",
+      "stage": "positive_control",
+      "maxdim": 2,
+      "ambient_dim": 8,
+      "n_points": 95,
+      "noise": 0.025
+    }
+  },
+  "stability": {
+    "pca8_sphere_rips": {
+      "one_at_a_time": {
+        "pca_dim": [
+          6,
+          10,
+          12
+        ],
+        "n_dense": [
+          1200,
+          2400
+        ],
+        "k_density": [
+          24,
+          48
+        ],
+        "n_landmarks": [
+          70,
+          140
+        ]
+      },
+      "extra_variants": [
+        {
+          "pipeline": "random_projection8_sphere_rips",
+          "projection": "random_projection_sphere",
+          "projection_dim": 8
+        }
+      ]
+    },
+    "s15_witness": {
+      "one_at_a_time": {
+        "n_witnesses": [
+          10000
+        ],
+        "n_landmarks": [
+          30,
+          40
+        ],
+        "k_density": [
+          32
+        ]
+      },
+      "extra_variants": [
+        {
+          "pipeline": "s15_witness_anchor_density",
+          "density_mode": "anchors"
+        }
+      ]
+    }
+  },
+  "modal": {
+    "app_name": "latent-space-topology-confirmatory-h1",
+    "volume_name": "latent-space-topology-confirmatory-h1",
+    "image_python_version": "3.12",
+    "cpu": 8,
+    "memory_mb": 32768,
+    "timeout_seconds": 21600,
+    "max_parallel_conditions": 64
+  }
+}
