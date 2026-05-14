@@ -169,7 +169,19 @@ Main artifact risks:
    distances, and bootstrap confidence bands. Test whether these features
    predict dataset, class, tokenizer, reconstruction quality, or failure modes.
 
-6. Keep compute bounded.
+6. Explore Mapper as a controlled graph-valued summary.
+
+   Treat Mapper as a bridge between dimensionality reduction and topology: choose
+   explicit lenses, cover them with overlapping intervals, cluster preimages in
+   the original token space, then interpret graph statistics only against
+   controls and neighboring cover settings. Useful readouts include node/edge
+   counts, connected components, graph cycle rank, coverage, node label/image
+   entropy, and patch back-mapping for high-interest nodes. The first Mapper
+   pass should foreground negative controls: cover-only graphs, norm-preserving
+   random-direction controls, metadata-shuffle nulls for node purity, raw-patch
+   baselines, and cross-dataset comparisons.
+
+7. Keep compute bounded.
 
    Every remote run should have a cost estimate, a stopping rule, a minimal
    primary test, and a written statement of what result would change our belief.
@@ -185,5 +197,7 @@ Main artifact risks:
 - Which controls preserve enough structure to be fair?
 - Can we map the responsible latent tokens back to coherent patches or image
   behaviors?
+- Does Mapper reveal local regimes that ordinary 2D projections hide, or only
+  repackage lens and cover artifacts?
 - Should the next result be a positive discovery, or a reliable fingerprinting
   method even if no literal loop survives?

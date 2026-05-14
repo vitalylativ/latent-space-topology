@@ -28,6 +28,8 @@ the current run without recomputing model weights.
 | `10_natural_patch_baseline.ipynb` | Build a raw natural-image-patch baseline with controls. |
 | `11_metric_preprocessing_sensitivity.ipynb` | Test how FLUX summaries change under metric and preprocessing choices. |
 | `12_cycle_hunt_long_lived_h1.ipynb` | Summarize the search for the claimed long-lived FLUX H1 cycle. |
+| `13_confirmatory_h1_sweep.ipynb` | Report the held-out confirmatory H1 sweep and verdict. |
+| `14_mapper_flux_intuition.ipynb` | Consolidated Mapper exploration: intuition, controls, node interpretation, dataset checks, raw-patch baseline, and synthesis. |
 
 ## Installation
 
@@ -85,4 +87,5 @@ Notebook source builders are kept in `scripts/`. For example:
 
 ```bash
 uv run python scripts/build_flux_tda_notebook.py
+uv run python scripts/build_mapper_intuition_notebook.py
 ```
