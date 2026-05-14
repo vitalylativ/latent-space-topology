@@ -30,6 +30,9 @@ the current run without recomputing model weights.
 | `12_cycle_hunt_long_lived_h1.ipynb` | Summarize the search for the claimed long-lived FLUX H1 cycle. |
 | `13_confirmatory_h1_sweep.ipynb` | Report the held-out confirmatory H1 sweep and verdict. |
 | `14_mapper_flux_intuition.ipynb` | Consolidated Mapper exploration: intuition, controls, node interpretation, dataset checks, raw-patch baseline, and synthesis. |
+| `15_literature_guided_research_plan.ipynb` | Short literature-guided plan for the post-H1 phase, including the draft confirmatory Mapper-node question. |
+| `16_latent_diagnostic_workbench.ipynb` | Feature table, stable Mapper-node matching across seeds, and activation-atlas-style patch visualization. |
+| `17_mapper_node_stability_report.ipynb` | Thin report for the frozen Mapper-node stability experiment and its control-relative verdict. |
 
 ## Installation
 
@@ -88,4 +91,8 @@ Notebook source builders are kept in `scripts/`. For example:
 ```bash
 uv run python scripts/build_flux_tda_notebook.py
 uv run python scripts/build_mapper_intuition_notebook.py
+uv run python scripts/build_literature_guided_research_plan_notebook.py
+uv run python scripts/build_latent_diagnostic_workbench_notebook.py
+uv run python scripts/run_mapper_node_stability.py
+uv run python scripts/build_mapper_node_stability_report_notebook.py
 ```

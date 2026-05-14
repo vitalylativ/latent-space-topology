@@ -1,0 +1,61 @@
+{
+  "name": "mapper_node_stability_v1",
+  "status": "draft_preregistration",
+  "motivation": "Test whether Mapper contributes stable, interpretable local regimes beyond dimensionality reduction and simple controls.",
+  "target_object": {
+    "representation": "FLUX VAE spatial tokens",
+    "view_for_matching": "raw token source indices plus norm-density Mapper lens",
+    "datasets": ["beans_local", "cifar10", "fashion_mnist"],
+    "unit_of_analysis": "Mapper node tracks across overlapping bootstrap samples"
+  },
+  "mapper": {
+    "lens": "norm_density",
+    "n_intervals": 8,
+    "overlap": 0.35,
+    "clusterer": "dbscan",
+    "min_bin_points": 12,
+    "min_cluster_size": 5,
+    "eps_quantile": 0.35,
+    "pool_points": 2200,
+    "sample_fraction": 0.75,
+    "seeds": [72, 73, 74, 75]
+  },
+  "matching": {
+    "method": "Hungarian one-to-one matching by exact source-token Jaccard",
+    "stable_track_thresholds": {
+      "reference_node_size_min": 20,
+      "recurrence_min": 0.67,
+      "median_best_jaccard_min": 0.15
+    }
+  },
+  "interpretability": {
+    "primary_metadata_threshold": {
+      "label_purity_excess_min": 0.15
+    },
+    "visualization": "Beans-only patch atlas of all tracks that pass the declared thresholds"
+  },
+  "controls": {
+    "representation_controls": ["channel_shuffle", "norm_random_directions"],
+    "specificity_baselines": ["raw_patches_beans_local"],
+    "metadata_control": "label permutation within dataset",
+    "bootstrap_unit": "overlapping fixed-pool token subsamples; image-block bootstrap is a future stricter guardrail"
+  },
+  "primary_question": "Do observed FLUX token clouds contain more stable label-enriched Mapper node tracks than the strongest matched control?",
+  "primary_statistic": "stable_enriched_track_count_delta = observed_count - max(control_counts)",
+  "decision_rule": {
+    "pass": [
+      "mean stable_enriched_track_count_delta across datasets is positive",
+      "bootstrap 95 percent confidence interval lower bound is above zero",
+      "at least two of three datasets have positive delta"
+    ],
+    "fail_interpretation": "A failure is evidence that the current Mapper nodes are mainly lens, cover, density, or dataset-size artifacts rather than robust representation regimes."
+  },
+  "secondary_readouts": [
+    "median node-match Jaccard",
+    "stable track size coefficient of variation",
+    "weighted label purity excess",
+    "dominant image fraction",
+    "spatial radius",
+    "patch atlas coherence for beans_local"
+  ]
+}

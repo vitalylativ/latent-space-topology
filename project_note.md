@@ -181,6 +181,24 @@ Main artifact risks:
    random-direction controls, metadata-shuffle nulls for node purity, raw-patch
    baselines, and cross-dataset comparisons.
 
+   The current follow-up is implemented in notebooks 15 and 16. Notebook 15
+   converts the open-ended next phase into a literature-guided plan and a draft
+   preregistration for stable Mapper-node tracks. Notebook 16 builds a single
+   geometry/TDA/Mapper feature table, matches Mapper nodes across overlapping
+   bootstrap samples by source-token Jaccard, and renders a Beans patch atlas for
+   stable candidate nodes. The important shift is from "does this graph have
+   loops?" to "does this local node regime recur, beat controls, and map back to
+   coherent source patches?"
+
+   Notebook 17 runs the first frozen Mapper-node stability report. Under the
+   current thresholds, observed FLUX token clouds have more stable,
+   label-enriched Mapper node tracks than the strongest representation control:
+   mean delta `8.0`, bootstrap 95% CI `[2.0, 13.0]`, positive datasets `3 / 3`.
+   This is a positive lead, not a final mechanistic claim. The Beans raw-patch
+   specificity baseline also produces stable enriched tracks, so the next
+   interpretation question is whether the signal is FLUX-specific or a broader
+   natural-image/local-patch phenomenon.
+
 7. Keep compute bounded.
 
    Every remote run should have a cost estimate, a stopping rule, a minimal
